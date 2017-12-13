@@ -1,0 +1,247 @@
+body{
+  background-color: #292929;
+  color:white;
+  width:100%;
+  height:100vh;
+  padding:0;
+  margin:0;
+  font-family: 'Segoe UI Semilight WestEuropean', 'Segoe UI Semilight', 'Segoe WP Semilight', 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif;
+  font-size: 17px;
+  font-weight: bold;
+}
+.highlight{
+  /*box-shadow: -2px 0 white, 0 2px white, 2px 0 white, 0 -2px white;*/
+  border: 0.1em solid white;
+  
+}
+
+.eventKey.highlight{
+  padding:0.4em;
+}
+#main{
+  display:grid;
+  overflow:hidden; 
+  width:100%; 
+}
+
+@media screen and (max-width: 700px) and (min-width:501px){
+  #main{
+    grid-row-gap: 0.5em;
+    grid-template-columns: 100%;
+    grid-template-rows: min-content min-content;
+    height:auto;
+  }
+  #back{
+    margin-bottom:0.5em;
+    font-size:2em;
+    cursor:pointer;
+  }
+  #events{
+    max-height:100vh;
+    
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}
+@media (max-width:500px){
+  #events{
+    /*grid-template-columns: repeat(auto-fill, 100%);*/
+    grid-auto-columns: repeat(1, 1fr);
+  }
+}
+
+@media screen and (min-width: 701px){
+  #events{
+    grid-template-columns: repeat(12, minmax(300px,1fr));
+  }
+  #main{
+    grid-template-columns: minmax(300px, 2fr) 8fr;
+    grid-column-gap: 0.5em;
+    grid-template-rows: 100%;
+    height:100%;
+  }
+  #back{
+    position:absolute;
+    bottom:0.25em;
+    left:0.25em;
+    font-size:4em;
+    cursor:pointer;
+  }
+  .date{
+    min-height:100vh;
+  }
+}
+#side{
+  background-color:#222222;
+  text-align:center;
+  padding: 0em 1em;
+  overflow-x:hidden;
+  overflow-y:scroll;
+  
+}
+#side h1{
+  position:relative;
+}
+  #side h1 .fa-arrow-circle-left{
+    margin-right:0.5em;
+    position:absolute;
+    left:0em;
+    top:50%;
+    transform: translateY(-50%);
+    cursor:pointer;
+  }
+  #side h1 .fa-arrow-circle-right{
+    margin-left:0.5em;
+    position:absolute;
+    right:0em;
+    top:50%;
+    transform: translateY(-50%);
+    cursor:pointer;
+  }
+
+#events{
+  display:grid;
+  grid-template-rows: min-content;
+  
+  grid-column-gap: 0.5em;
+  overflow-x:scroll;
+  overflow-y:hidden;
+  background-color:#292929;
+}
+.date{
+  background-color: #222222;
+  text-align:center;
+  padding:0 0.5em;  
+  position:relative;
+  display:flex;
+  flex-flow: column;
+  height:100%;
+  max-height:100vh;
+}
+  #eventHolder{
+    flex: 1 1 auto;
+    overflow-y:scroll;
+  }
+
+  .date img{
+    width:100%;
+    height:auto;
+  }
+.events{
+  padding:0;
+  margin-bottom:0.5em;
+}
+.event{
+  position:relative;
+  padding:5px;
+  padding-bottom:10px;
+  
+}
+  .event h3{
+    text-align:center;
+  }
+  .event #description{
+    font-size:0.8em;
+    padding:0.5em;
+    text-align:justify;
+  }
+  .date span{
+    font-size:4em;
+    font-weight:bold;
+    
+  }
+  .date #event-bottom span{
+    font-size:10px;
+
+  }
+  .date #event-bottom span:first-child{
+    position:absolute;
+    bottom:12.5px;
+    left:1em;
+  }
+  .date #event-bottom span:last-child{
+    position:absolute;
+    bottom:12.5px;
+    right:1em;
+  }
+  .date #event-bottom i{
+    font-size:10px;
+    text-align:center;
+  }
+.eventKey{
+  padding:0.5em 0;
+  display:inline-block;
+  cursor:pointer;
+}
+#keyholder{
+  display:grid;
+  width:100%;
+  grid-template-columns: repeat(3,1fr);
+  grid-column-gap: 0.5em;
+  margin-bottom:2em;
+  box-sizing:border-box;
+}
+.dayW{
+  display:inline-block;
+  color :white;
+  line-height:1em;
+}
+.day{
+  display:inline-block;
+  border-radius:50%;
+  padding: 15% 0;
+  margin-bottom:0.2em;
+  cursor:pointer;
+}
+#calendar{
+  color: white;
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  grid-column-gap:0.25em;
+  margin-bottom:0.5em;
+}
+
+#theme{
+  text-align:justify;
+  margin-bottom:1em;
+
+}
+
+.navbar-header {
+  box-sizing: border-box;
+  display: block;
+  height: 40px;
+  line-height: 40px;
+  font-family: 'Segoe UI Semilight WestEuropean', 'Segoe UI Semilight', 'Segoe WP Semilight', 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif;
+  font-size: 17px;
+  padding-left: 20px;
+  position: relative;
+  font-weight: bold;
+}
+
+@media (min-width: 480px) {
+  .navbar-header {
+    float: left;
+    margin-right: 20px;
+    font-size: 20px;
+    padding: 0;
+  }
+}
+
+.ms-TextField {
+  width: 300px;
+  display: inline-block;
+}
+
+.icon-holder {
+  display: inline-block;
+  width: 30px;
+}
+
+.big-icon {
+  font-size: 30px;
+  top: 5px;
+  position: relative;
+}
+

@@ -1,0 +1,41 @@
+<!--  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
+        See LICENSE in the source repository root for complete license information. -->
+
+<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>NBC Calendar</title>
+  <base href="/">
+
+  <!-- Third party dependencies. -->
+  <script src="https://use.fontawesome.com/1079ce90fa.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <!-- Microsoft ui components/recreation-->
+  <link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/1.0/fabric.css">
+  <link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/1.0/fabric.components.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular-route.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.8.0/loading-bar.js"></script>
+  <!-- Microsoft authentification library-->
+  <script src="https://secure.aadcdn.microsoftonline-p.com/lib/0.1.1/js/msal.min.js"></script> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.8.0/loading-bar.css">
+
+
+  <!-- App code. -->
+  
+  <script src="/scripts/config.js"></script>
+  <script src="/scripts/app.js"></script>
+  <script src="/scripts/graphHelper.js"></script>
+  <script src="/controllers/mainController.js"></script>  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<!--class="ms-Grid" -->
+<body >
+  <div ng-controller="MainController as main" ng-include="'views/main.html'" id="main"></div>
+  
+</body>
+
+</html>
