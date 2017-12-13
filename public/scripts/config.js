@@ -8,6 +8,6 @@ var APPLICATION_CONFIG = {
     redirectUri: "http://localhost:5000/",
     interactionMode: "popUp",
     graphEndpoint: "https://graph.microsoft.com/v1.0/me",
-    graphScopes: ["user.read mail.send calendars.read"],
+    graphScopes: ["user.read calendars.read"],
     extraQueryParameter: "prompt=consent"
 };
