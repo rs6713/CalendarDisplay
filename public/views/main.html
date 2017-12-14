@@ -7,31 +7,31 @@
   <div class="ms-NavBar">
     <ul class="ms-NavBar-items">
       <li class="navbar-header">Microsoft Graph Connect sample</li>
-      <li class="ms-NavBar-item ms-NavBar-item--right" ng-show="main.isAuthenticated()" ng-click="main.logout()"><i class="ms-Icon ms-Icon--x"></i> Disconnect</li>
+      <li class="ms-NavBar-item ms-NavBar-item--right" ng-show="main.appCalendar.isAuthenticated()" ng-click="main.appCalendar.logout()"><i class="ms-Icon ms-Icon--x"></i> Disconnect</li>
     </ul>
   </div>
   -->
-  <!-- App main content markup. -->
+  <!-- App main.appCalendar content markup. -->
   <!--<div class="ms-Grid-col ms-u-mdPush1 ms-u-md9 ms-u-lgPush1 ms-u-lg6">
-    <div ng-hide="main.isAuthenticated()">
+    <div ng-hide="main.appCalendar.isAuthenticated()">
       <p class="ms-font-xl">Use the button below to connect to Microsoft Graph.</p>
-      <button class="ms-Button" ng-click="main.login()">
+      <button class="ms-Button" ng-click="main.appCalendar.login()">
         <span class="ms-Button-label">Connect</span>
       </button>
     </div>
-    <div ng-show="main.isAuthenticated()">
-      <h2 class="ms-font-xxl ms-fontWeight-semibold">Hi, {{ main.displayName }}!</h2>
+    <div ng-show="main.appCalendar.isAuthenticated()">
+      <h2 class="ms-font-xxl ms-fontWeight-semibold">Hi, {{ main.appCalendar.displayName }}!</h2>
       <p class="ms-font-xl">You're now connected to Microsoft Graph. Click the button below to send a message from your account using the Microsoft Graph API. </p>
       <div class="ms-TextField">
-        <input ng-model="main.emailAddress" class="ms-TextField-field">
+        <input ng-model="main.appCalendar.emailAddress" class="ms-TextField-field">
       </div>
-      <button class="ms-Button" ng-click="main.sendMail()">
+      <button class="ms-Button" ng-click="main.appCalendar.sendMail()">
         <span class="ms-Button-label">Send mail</span>
       </button>
-      <div ng-show="main.requestSuccess && main.requestFinished">
-        <p class="ms-font-m ms-fontColor-green">Successfully sent an email to {{ main.emailAddressSent }}!</p>
+      <div ng-show="main.appCalendar.requestSuccess && main.appCalendar.requestFinished">
+        <p class="ms-font-m ms-fontColor-green">Successfully sent an email to {{ main.appCalendar.emailAddressSent }}!</p>
       </div>
-      <div ng-show="!main.requestSuccess && main.requestFinished">
+      <div ng-show="!main.appCalendar.requestSuccess && main.appCalendar.requestFinished">
         <p class="ms-font-m ms-fontColor-redDark">Something went wrong, couldn't send an email.</p>
       </div>
     </div>
@@ -41,44 +41,44 @@
   <!-- Side view -->
 <div id="side">
   <h1> 
-    <i class="fa fa-arrow-circle-left" aria-hidden="true" ng-click="main.changeTime(-1)"></i>
-      {{main.currentTime.split(" ")[main.currentTime.split(" ").length-1]}}
-    <i class="fa fa-arrow-circle-right" aria-hidden="true" ng-click="main.changeTime(1)"></i>
+    <i class="fa fa-arrow-circle-left" aria-hidden="true" ng-click="main.appCalendar.changeTime(-1)"></i>
+      {{main.appCalendar.currentTime.split(" ")[main.appCalendar.currentTime.split(" ").length-1]}}
+    <i class="fa fa-arrow-circle-right" aria-hidden="true" ng-click="main.appCalendar.changeTime(1)"></i>
   </h1>
-  <div id="calendar" ng-hide="main.daysMonth.length==0">
+  <div id="calendar" ng-hide="main.appCalendar.daysMonth.length==0">
     <div class="dayW"  ng-repeat="day in ['M', 'T', 'W', 'T', 'F', 'S', 'S'] track by $index">
       {{day}}
     </div>
-    <div class="day" ng-repeat="day in main.daysMonth track by $index"  style="{{main.colourDay(day)}}" ng-click="main.timeForward(day)">
+    <div class="day" ng-repeat="day in main.appCalendar.daysMonth track by $index"  style="{{main.appCalendar.colourDay(day)}}" ng-click="main.appCalendar.timeForward(day)">
       <!--style="background-color: {{i}}"-->
       {{day}}
     </div>
   </div>
   <div id="keyholder">
-      <div class="eventKey" ng-repeat="(key,val) in main.eventTypes" style="background-color:{{val}}" ng-click='main.reduceCurrentEvents(key)'>
+      <div class="eventKey" ng-repeat="(key,val) in main.appCalendar.eventTypes" style="background-color:{{val}}" ng-click='main.appCalendar.changeEventsFilter(key)'>
           {{key}}
       </div>
   </div>
   <div id="theme">
-      {{main.extractDescription()}}
+      {{main.appCalendar.extractDescription()}}
   </div>
 
   
   <div id="back-holder">
-    <i class="fa fa-arrow-circle-left" id="back" aria-hidden="true" ng-click="main.backTime()" ng-hide="main.currentTime.split(' ').length==1">
+    <i class="fa fa-arrow-circle-left" id="back" aria-hidden="true" ng-click="main.appCalendar.backTime()" ng-hide="main.appCalendar.currentTime.split(' ').length==1">
     </i>
-    <div>{{main.currentTime.split(" ").slice(0, -1).join(" ")}}</div>
+    <div>{{main.appCalendar.appCalendar.currentTime.split(" ").slice(0, -1).join(" ")}}</div>
   </div>
 </div>
 <!-- Scrollable dates-->
 <div id="events" >
-  <div class="date" ng-repeat="key in main.keys(main.currentEvents)" ng-click="main.timeForward(key)" >
+  <div class="date" ng-repeat="key in main.appCalendar.keys(main.appCalendar.currentEvents)" ng-click="main.appCalendar.timeForward(key)" >
       <!--<span>{{period}}</span>-->
       <h1>{{key}}</h1>
       <div id="eventHolder">
         <!--| orderBy:'-start':reverse-->
-        <div class="events" ng-repeat="event in main.currentEvents[key] ">
-          <div class="event" style="background-color:{{main.eventTypes[event.type]}}">
+        <div class="events" ng-repeat="event in main.appCalendar.currentEvents[key] ">
+          <div class="event" style="background-color:{{main.appCalendar.eventTypes[event.type]}}">
             <h3>
               {{event.title}}
             </h3>
@@ -94,7 +94,7 @@
           <img ng-repeat="imgSrc in event.images track by $index" src="{{imgSrc}}"/>  
         </div>
       </div>
-      <!--<i class="fa fa-arrow-circle-right" aria-hidden="true" ng-click="main.timeForward(period)"></i> -->
+      <!--<i class="fa fa-arrow-circle-right" aria-hidden="true" ng-click="main.appCalendar.timeForward(period)"></i> -->
   </div>
 </div>
 <script src="/scripts/visuals.js"></script>
