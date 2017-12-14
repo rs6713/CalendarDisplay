@@ -14,13 +14,13 @@
   Need to set max number events display per month?
   Create good class structure
   Clean up code,
+  New front end designs
 */
 
 //All events collected in association with a year
 //these can then be repeatedly used.
 //Issue is when exceeds max data storage
 //Allow filter event types? clear/reset colouring, #222222
-
 
 (function () {
   angular
@@ -30,25 +30,13 @@
   function MainController($scope, $http, $log, GraphHelper) {
     let vm = this;
 
-    // View model properties
-    vm.displayName;
-    vm.requestSuccess;
-    vm.requestFinished;
-
     // View model methods
     vm.login = login;
     vm.logout = logout;
     vm.isAuthenticated = isAuthenticated;
     vm.initAuth = initAuth;
     
-    vm.eventTypes={"DEMO": "#F17BD6", "TALK":"#CCAD14", "PUBLIC": "#00CCA4"};
-    var defaultEvent={
-      start: [],
-      end:[],
-      title:"VR How To",
-      description:"Exploring the possibilities of virtual reality, yey",
-      type:"NONE"
-    };
+    vm.eventTypes={"DEFAULT":"#333333", "DEMO": "#F17BD6", "TALK":"#CCAD14", "PUBLIC": "#00CCA4"};
     
     vm.allEvents={};
 
@@ -57,7 +45,6 @@
     vm.currentEvents={};
 
     vm.daysMonth=[];
-    vm.currentEventKeys=Object.keys(vm.currentEvents);
 
     var monthsLength=[31,28,31,30,31,30,31,31,30,31,30,31];
     var months=["January", "February","March", "April", "May", "June", "July", "August", "September", "October", "November","December"];
@@ -71,6 +58,8 @@
     /////////////////////////////////////////
     // End of exposed properties and methods.
 
+    //Returns keys of events in sorted arrangement
+    //Different process required depending on whether year,month,day
     vm.keys=function(objIn){
       if(vm.currentTime.split(" ").length==1){
         return Object.keys(objIn).sort( function(a,b){
@@ -79,15 +68,15 @@
           }else{
             return 1;
           }
-        } );
+        });
       }
       if(vm.currentTime.split(" ").length==2){
         return Object.keys(objIn).sort();
       }
       return Object.keys(objIn);
-      
     }
 
+    //User jumps backward to less specific time
     vm.backTime= function(){
       vm.currentEvents={};
       var tempTime=vm.currentTime.split(" ");
@@ -95,15 +84,19 @@
       vm.currentTime=tempTime.join(" ");
       updateCurrentEvents();
     }
+
+    //User jumps forward to more specific time
+    //Only if not already at day level specifity
     vm.timeForward=function(newTime){
       if(vm.currentTime.split(" ").length!=3){
         vm.currentEvents={};
+        
         if(vm.currentTime.split(" ").length==2){
+          newTime=String(newTime).replace(/\s+/g, '');
           newTime= newTime.length< 2? "0"+newTime : newTime;
         }
-        
         vm.currentTime+= " "+newTime;
-        console.log("new curent time", vm.currentTime);
+        console.log("Forwarding curent time to: ", vm.currentTime);
         updateCurrentEvents();
       }
     }
@@ -179,25 +172,22 @@
       }else{
         stNew.push(parseInt(st[2])+"th");
       }
-      //console.log(st[3].slice(2,1));
+
       if(parseInt(st[3].slice(0,2))<12){
         stNew.push( parseInt(st[3].slice(0,2)) +"." + st[3].slice(3,5)+"am");
       }else{
         stNew.push((parseInt(st[3].slice(0,2))-12) +"." + st[3].slice(3,5)+"pm");
       }
-
       return stNew;
     }
 
+    //Creates human friendly way to view time
+    //Input is ["2017", "02", "11", "00:00"] *2
+    //Output ["2017", "February", "November", "00.00am"]
     vm.displayTime=function(st,en){
-      //"2017","12","07","00:00
-      console.log(st, en);
-
-      var stNew=formatTime(st);
-     
+      var stNew=formatTime(st);    
       var enNew=formatTime(en);
-      console.log(stNew);
-      console.log(enNew);
+
       for(var i=0; i< stNew.length; i++){
         if(stNew[i]!=enNew[i]){
           stNew=stNew.splice(i, stNew.length-1);
@@ -244,19 +234,17 @@
 
 
       }, function (error) {
+        vm.login();
         $log.error('HTTP request to the Microsoft Graph API failed.');
 
       }); 
     }
 
     function loadAttachments(){
-      console.log("fetching attachments");
-      console.log(JSON.stringify(vm.currentEvents));
       for(key in vm.currentEvents){
-        console.log("Current time, events list", key,JSON.stringify(vm.currentEvents[key]));
         for(var i=0; i<vm.currentEvents[key].length;i++){
-          console.log("Fetching Attachments", vm.currentEvents[key][i]["hasAttachments"]);
           if(vm.currentEvents[key][i]["hasAttachments"]){
+            console.log("Fetching Attachments from",key, i);
             attachAttachment(key,i);
           }  
         }      
@@ -265,12 +253,11 @@
 
     //Based on currentTime interested in, load events from allEvents into currentEvents
     function updateCurrentEvents(){
+      console.log("Beginning to update events, loading items from allEvents into currentEvents");
       var cTime= vm.currentTime.split(" ");
-      //vm.currentEvents=JSON.parse(JSON.stringify(vm.allEvents));
       var temp=JSON.parse(JSON.stringify(vm.allEvents));
-      console.log("Events to be stored", JSON.stringify(temp));
+    
       for(var i=0; i<cTime.length;i++){
-        console.log(cTime[i]);
         if(cTime[i] in temp){
           temp=temp[cTime[i]]
         }else{
@@ -278,8 +265,8 @@
           break;
         }
       }
-      console.log("length ctime", cTime.length);
-      console.log("Current Events to be stored", JSON.stringify(temp));
+      console.log("The current time is level ", cTime.length, " specific.");
+      
       //if a day, just array events
       if(cTime.length==3){
         //key by time
@@ -306,25 +293,19 @@
             }
           }
         }
-        //vm.currentEvents=temp;
-
       //only year specified
       //temp is collection months->days-> event array
       }else{
         //for month
         var ks=Object.keys(temp).sort(function(a,b){return months.indexOf(a)>months.indexOf(b)? 1 : -1});
-        console.log("sorted keys", ks, ks.length);
         for (var i=0;i<ks.length;i++){
           var key=ks[i];
-          console.log("Month to add", key, JSON.stringify(temp[key]));
           //month is empty
           vm.currentEvents[key]=[];
           //for day in month
           var ks2=Object.keys(temp[key]).sort();
-          console.log("sorted keys", ks2);
           for (var u=0; u<ks2.length;u++){
             var key2=ks2[u];
-            console.log("Day to add", key2, JSON.stringify(temp[key][key2]));
             for( var j=0; j< temp[key][key2].length; j++){
               if(selectedEventTypes.indexOf(temp[key][key2][j].type)!=-1 || selectedEventTypes.length==0){
                 vm.currentEvents[key].push(temp[key][key2][j]);
@@ -335,11 +316,12 @@
             //  vm.currentEvents.push(temp[key][key2][i]);
             //} 
           }
-          console.log("currentevents", JSON.stringify(vm.currentEvents));
+          //console.log("currentevents", JSON.stringify(vm.currentEvents));
         }       
       }
-
+      console.log("Now loading attachments into currentEvents");
       loadAttachments();
+      console.log("Now updating Calendar side display");
       //Calculate day the month starts
       vm.daysMonth=[];
       var curr=vm.currentTime.split(" ");
@@ -380,15 +362,16 @@
           vm.daysMonth.push("");
         }
       }
+      console.log("Finished updating current events: Updating calendar side display, events & their attachments")
     }
-
+    //vm.logout();
     function initAuth() {
         // Check initial connection status.
         if (localStorage.token) {
-          console.log("localstorage token exists, logged in");
+          console.log("lLocalstorage token exists, logged in");
           processAuth();
         }else{
-          console.log("localstorage token doesn't exist, need to log in");
+          console.log("Localstorage token doesn't exist, need to log in");
           vm.login();
         }
     }
@@ -396,33 +379,9 @@
     // Auth info is saved in localStorage by now, so set the default headers and user properties.
     // Auth info is saved locally, can set localStorage.user
     function processAuth() {
-
         // Add the required Authorization header with bearer token.
         $http.defaults.headers.common.Authorization = 'Bearer ' + localStorage.token;
-        
-        // This header has been added to identify our sample in the Microsoft Graph service. If extracting this code for your project please remove.
-        $http.defaults.headers.common.SampleID = 'angular-connect-rest-sample';
-
-        if (localStorage.getItem('user') === null) {
-
-          // Get the profile of the current user.
-          GraphHelper.me().then(function(response) {
-            
-            // Save the user to localStorage.
-            let user =response.data;
-            localStorage.setItem('user', angular.toJson(user));
-
-            vm.displayName = user.displayName;
-            vm.emailAddress = user.mail || user.userPrincipalName;
-            getCalendar();
-          });
-        } else {
-          let user = angular.fromJson(localStorage.user);
-            
-          vm.displayName = user.displayName;
-          vm.emailAddress = user.mail || user.userPrincipalName;
-          getCalendar();
-        }
+        getCalendar();
     }
 
     vm.initAuth();
@@ -456,8 +415,6 @@
           console.log("There are filters to be applied");
           loadEventsShown();
         }
-        
-        
     }
 
     var loadEventsShown=function(){
@@ -489,31 +446,27 @@
     vm.colourDay=function(day){
       var dayColors={};
 
-      day= day<10 ? "0"+String(day) : String(day);
+      
       //if it is a day of the month
       if(day!=""){
-        //console.log("the day is", day);
+        day= day<10 ? "0"+String(day) : String(day);
+
         var curr=vm.currentTime.split(" ");
         //if the day is in allevents, so has events
-        //console.log("available days", Object.keys(vm.allEvents[curr[0]][curr[1]]));
         if( curr[0] in vm.allEvents && curr[1] in vm.allEvents[curr[0]] && day in vm.allEvents[curr[0]][curr[1]]){
-          //for all events, push event type color to dayColors
-          //console.log("Day is in list of events");
           var temp;
-          //console.log("nUMBER of events," ,vm.allEvents[curr[0]][curr[1]][day].length);
           for(var i=0; i<vm.allEvents[curr[0]][curr[1]][day].length; i++){
-            temp= vm.eventTypes[vm.allEvents[curr[0]][curr[1]][day][i].type];
-            //console.log("day, event no, color", day, i, temp);
+            var newcolor=vm.eventTypes[vm.allEvents[curr[0]][curr[1]][day][i].type];
+            temp= newcolor ==undefined? "#444444" : newcolor ;
             if(day in dayColors){
               dayColors[day].push(temp);
             }else{
               dayColors[day]=[temp];
             }
           }
-          //console.log("number of events", day, dayColors, dayColors[day], dayColors[day].length );
+
           //Create background color or linear gradient
           if(day in dayColors && dayColors[day].length>1){
-            //console.log("multiple events");
             var gradient="-webkit-radial-gradient(";
             for(var u=0; u< dayColors[day].length;u++){
               gradient+=" "+dayColors[day][u]+' '+String(100/dayColors[day].length)+"%  ,";
@@ -525,29 +478,18 @@
             //console.log("One event, color", temp);
             return 'background-color:'+ temp;
           }
-          
         }
       }
       return 'background-color: #222222';
     }
     
-    //vm.logout();
-    /*
-    if(!isAuthenticated()){
-      console.log("Need to authenticatem in order to load calendar");
-      vm.login();//login user and refresh page
-    }else{
-      console.log("Already authenticated", localStorage.getItem('user') );
-      getCalendar();
-    }
-    */
     //Fetch all calendar dates, then place current in currentEvents
     //May lead to huge memory overflow
     function getCalendar(){
       GraphHelper.getCalendar(vm.currentTime)
       .then(function (response) {
         $log.debug('HTTP request to the Microsoft Graph API returned successfully.', response);
-        console.log(response);
+        console.log("The calendar events response: ", response);
         vm.currentEvents={};
         var newEvents= response.data.value;
         //For each new event, create its dict instance of values, then store in events
@@ -560,6 +502,7 @@
           newEvent.hasAttachments=newEvents[i].hasAttachments;
           newEvent.description=newEvents[i].bodyPreview;
           var title= newEvents[i].subject.split(":");
+          newEvent.type="DEFAULT";
           if(title.length>1){
             newEvent.type=title[0];
             newEvent.title=title[1];
@@ -568,7 +511,6 @@
           }
           newEvent.start=newEvents[i].start.dateTime;
           //2017-12-07T00:00:00.0000000
-          //console.log(newEvents[i].start.dateTime);
           var newEnd= newEvents[i].end.dateTime.split("-");
           var newStart= newEvents[i].start.dateTime.split("-");
           newEnd=[newEnd[0], newEnd[1], newEnd[2].slice(0,2), newEnd[2].slice(3,8)];//year month day need to get time conversion as well
@@ -598,15 +540,14 @@
             }
           }
           newEvent.time=vm.displayTime(newStart, newEnd);
-          //newEvent.end=newEnd;
-          console.log("Event to be added: ",newEvent);
+          //console.log("Event to be added: ",newEvent);
           //Add events to event list, 
           //If event spans multiple days, months, years, an event is added every day it occurs
             var eventToAdd= {};
             var startYear=parseInt(newStart[0]);
             var endYear=parseInt(newEnd[0]);
 
-            console.log("Start year, end year", startYear, endYear);
+            //console.log("Start year, end year", startYear, endYear);
            
             for(var y=startYear; y<endYear+1; y++){
               var cMonth= parseInt(newStart[1]);
@@ -616,7 +557,7 @@
               }else if(y==endYear && endYear> startYear){
                 cMonth=1;
               }
-              console.log("Current year, start month, end month", String(y), cMonth, eMonth);
+              //console.log("Current year, start month, end month", String(y), cMonth, eMonth);
               eventToAdd[0]=String (y);
               for(var m=cMonth; m<eMonth+1; m++){
 
@@ -638,32 +579,25 @@
                   if(m==eMonth && y==endYear){
                     endDay=parseInt(newEnd[2]);
                   }
-                  console.log("START, END DAY",startDay, endDay);
+                  //console.log("START, END DAY",startDay, endDay);
                   for(u= startDay; u< endDay+1; u++){
                     eventToAdd[2]=u<10 ? "0"+String(u): String(u);
-                    console.log("Setting current event");
+                    //console.log("Setting current event");
                     setEvent(eventToAdd, newEvent);
                   }
               }
-              
             }
-            
           }
           //Put events that are in period currently being looked at in currentEvents.
-          console.log("All events", JSON.stringify(vm.allEvents));
           updateCurrentEvents();
-          console.log("Current Events", JSON.stringify(vm.currentEvents));
-          
-        //processCalendar(response);
       }, function (error) {
+        vm.login();
         $log.error('HTTP request to the Microsoft Graph API failed.');
-
       }); 
     }
   
     function setEvent(newStart, newEvent){
-      console.log("before",JSON.stringify(vm.allEvents));
-      console.log("where to add", newStart);
+      console.log("Adding event at: ", newStart);
       var mth=months[parseInt(newStart[1])-1];
         if(newStart[0] in vm.allEvents){
           if(mth in vm.allEvents[newStart[0]]){
@@ -681,7 +615,6 @@
           vm.allEvents[newStart[0]][mth]={};
           vm.allEvents[newStart[0]][mth][newStart[2]]=[newEvent];
         }
-        console.log("after",JSON.stringify(vm.allEvents));
     }
 
 
@@ -696,11 +629,6 @@
     function logout() {
       GraphHelper.logout();
     }
-
- 
-  
-  
-    
 
   };
 })();

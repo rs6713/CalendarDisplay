@@ -32,12 +32,15 @@ var clientApplication;
 
       return {
 
-        // Sign in and sign out the user.
+
+        //Sign in and sign out the user.
         login: function login() {
             clientApplication.loginPopup(APPLICATION_CONFIG.graphScopes).then(function (idToken) {
+                console.log("Idtoken from login popup", idToken);
                 clientApplication.acquireTokenSilent(APPLICATION_CONFIG.graphScopes).then(function (accessToken) {
+                    console.log("Localstorage token, gotten by login popup:", accessToken);
                     localStorage.token = accessToken;
-                    window.location.reload();
+                    window.location.reload();// -->goes back, page start as normal
                 }, function (error) {
                     clientApplication.acquireTokenPopup(APPLICATION_CONFIG.graphScopes).then(function (accessToken) {
                         localStorage.token = accessToken;
@@ -60,17 +63,13 @@ var clientApplication;
           return $http.get('https://graph.microsoft.com/v1.0/me');
         },
 
-        // Send an email on behalf of the current user.
-        sendMail: function sendMail(email) {
-          return $http.post('https://graph.microsoft.com/v1.0/me/sendMail', { 'message' : email, 'saveToSentItems': true });        
-        },
         //Get calendar events between specified dates
         //https://graph.microsoft.com/v1.0/me/calendar/calendarView?startDateTime=2017-01-01T19:00:00.0000000&endDateTime=2017-01-07T19:00:00.0000000
         getCalendar: function getCalendar(currentTime){
-            console.log(currentTime);
+            //console.log(currentTime);
             var period= getTimePeriod(currentTime);
-            console.log(period);
-            return $http.get("https://graph.microsoft.com/v1.0/me/calendar/calendarView?startDateTime="+period[0]+"&endDateTime="+ period[1]);
+            console.log("Getting events during: ", period);
+            return $http.get("https://graph.microsoft.com/v1.0/me/calendar/calendarView?startDateTime="+period[0]+"&endDateTime="+ period[1]+"&$count=true&$top=1000");
         },
         getAttachment: function getAttachment(eventId){
             return $http.get("https://graph.microsoft.com/v1.0/me/events/"+eventId+"/attachments/");
@@ -83,7 +82,7 @@ var clientApplication;
 //time is space separated day, month, year
 function getTimePeriod(time){
     var time= time.split(" "); 
-    console.log(time);
+    //console.log(time);
     var months=["","January", "February","March", "April", "May", "June", "July", "August", "September", "October", "November","December"];
     //var months={"January":"01", "February":"02", "March":"03","April":"04", "May":"05", "June":"06","July":"07", "August":"08", "September":"09", "October": "10", "November":"11", "December":"12"};
     if(time.length==1){
@@ -105,7 +104,7 @@ function getTimePeriod(time){
         }
         
         if(time.length==2){
-            console.log("year, startmonth, endmonth", time[0], month, endMonth);
+            //console.log("year, startmonth, endmonth", time[0], month, endMonth);
             return [ time[0]+"-" + month+"-01T00:00:00.0000000", String(parseInt(time[0])+yearOverflow)+"-" +endMonth+"-01T00:00:00.0000000"];
         }else{
             var day=String(time[2]);

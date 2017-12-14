@@ -64,9 +64,11 @@
   </div>
 
   
-  
-  <i class="fa fa-arrow-circle-left" id="back" aria-hidden="true" ng-click="main.backTime()" ng-hide="main.currentTime.split(' ').length==1"></i>
-
+  <div id="back-holder">
+    <i class="fa fa-arrow-circle-left" id="back" aria-hidden="true" ng-click="main.backTime()" ng-hide="main.currentTime.split(' ').length==1">
+    </i>
+    <div>{{main.currentTime.split(" ").slice(0, -1).join(" ")}}</div>
+  </div>
 </div>
 <!-- Scrollable dates-->
 <div id="events" >
@@ -89,7 +91,7 @@
                 <span>{{event.type}}</span>
             </div>
           </div>
-          <img ng-repeat="imgSrc in event.images" src="{{imgSrc}}"/>  
+          <img ng-repeat="imgSrc in event.images track by $index" src="{{imgSrc}}"/>  
         </div>
       </div>
       <!--<i class="fa fa-arrow-circle-right" aria-hidden="true" ng-click="main.timeForward(period)"></i> -->

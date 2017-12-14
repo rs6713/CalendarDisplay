@@ -24,6 +24,22 @@ body{
   width:100%; 
 }
 
+#back{
+  cursor:pointer;
+}
+#back-holder{
+  display:table;
+  position:relative;
+  left:50%;
+}
+#back-holder div{
+  font-size:0.5em;
+  display:table-cell;
+  height:100%;
+  vertical-align:middle;
+  padding-left:0.5em;
+
+}
 @media screen and (max-width: 700px) and (min-width:501px){
   #main{
     grid-row-gap: 0.5em;
@@ -31,24 +47,40 @@ body{
     grid-template-rows: min-content min-content;
     height:auto;
   }
-  #back{
+  #back-holder{
     margin-bottom:0.5em;
     font-size:2em;
-    cursor:pointer;
+    transform: translateX(-50%);
   }
   #events{
     max-height:100vh;
     
     grid-template-columns: repeat(2, 1fr);
   }
-
+  #key-holder{
+    margin-bottom:0.5em;
+  }
 }
-@media (max-width:500px){
+@media screen and (max-width:500px){
   #events{
     /*grid-template-columns: repeat(auto-fill, 100%);*/
     grid-auto-columns: repeat(1, 1fr);
   }
   .date{
+    margin-bottom:0.5em;
+  }
+  #back-holder{
+    margin-bottom:0.5em;
+    font-size:2em;
+    transform: translateX(-50%);
+  }
+  #main{
+    grid-row-gap: 0.5em;
+    grid-template-columns: 100%;
+    grid-template-rows: min-content min-content;
+    height:auto;
+  }
+  #key-holder{
     margin-bottom:0.5em;
   }
 }
@@ -63,16 +95,16 @@ body{
     grid-template-rows: 100%;
     height:100%;
   }
-  #back{
+  #back-holder{
     position:absolute;
     bottom:0.25em;
     left:0.25em;
     font-size:4em;
-    cursor:pointer;
   }
   .date{
     min-height:100vh;
   }
+  
 }
 #side{
   background-color:#222222;
@@ -105,7 +137,6 @@ body{
 #events{
   display:grid;
   grid-template-rows: min-content;
-  
   grid-column-gap: 0.5em;
   overflow-x:scroll;
   overflow-y:hidden;
@@ -120,6 +151,7 @@ body{
   flex-flow: column;
   height:100%;
   max-height:100vh;
+  cursor:pointer;
 }
   #eventHolder{
     flex: 1 1 auto;
@@ -175,13 +207,14 @@ body{
   padding:0.5em 0;
   display:inline-block;
   cursor:pointer;
+  margin-bottom:0.5em;
 }
 #keyholder{
   display:grid;
   width:100%;
   grid-template-columns: repeat(3,1fr);
   grid-column-gap: 0.5em;
-  margin-bottom:2em;
+  margin-bottom:1em;
   box-sizing:border-box;
 }
 .dayW{
