@@ -40,6 +40,19 @@ body{
   padding-left:0.5em;
 
 }
+
+#attachment{
+  position:absolute;
+  top:0.5em;
+  right:0.5em;
+  font-size:1.5em;
+  cursor:pointer;
+}
+
+#attachment:hover{
+  text-shadow: 2px 2px 5px white;
+}
+
 @media screen and (max-width: 700px) and (min-width:501px){
   #main{
     grid-row-gap: 0.5em;
@@ -99,7 +112,7 @@ body{
     position:absolute;
     bottom:0.25em;
     left:0.25em;
-    font-size:4em;
+    font-size:3em;
   }
   .date{
     min-height:100vh;
@@ -151,13 +164,19 @@ body{
   flex-flow: column;
   height:100%;
   max-height:100vh;
-  cursor:pointer;
+  
 }
   #eventHolder{
     flex: 1 1 auto;
     overflow-y:scroll;
   }
 
+  .date h1{
+    cursor:pointer;
+  }
+  .date h1:hover{
+    text-shadow: 1px 1px 3px white;
+  }
   .date img{
     width:100%;
     height:auto;

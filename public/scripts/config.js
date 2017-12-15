@@ -11,8 +11,3 @@ var APPLICATION_CONFIG = {
     graphScopes: ["user.read calendars.read"]
 };
 
-var colors=["#333333","#F17BD6", "#CCAD14", "#00CCA4", "#A46496", "#5CA4A3", "#7F6E19"];
-var janfirst2000=5;//fell on a saturday
-
-var monthsLength=[31,28,31,30,31,30,31,31,30,31,30,31];
-var months=["January", "February","March", "April", "May", "June", "July", "August", "September", "October", "November","December"];

@@ -11,10 +11,15 @@ function calendar(graphH){
                     ,"December": "A month of many talks and demonstrations, falling under the theme of VR."
                 }};
 
-    var selectedEventTypes=[];
+    var eventFilters=[];
     this.eventTypes={};
-    this.miniDisplay=[];
     this.daysMonth=[];
+    var colors=["#333333","#F17BD6", "#CCAD14", "#00CCA4", "#A46496", "#5CA4A3", "#7F6E19"];
+    
+    var janfirst2000=5;//fell on a saturday
+    
+    var monthsLength=[31,28,31,30,31,30,31,31,30,31,30,31];
+    var months=["January", "February","March", "April", "May", "June", "July", "August", "September", "October", "November","December"];    
 
     this.currentTime="2017";
     this.currentTheme="The theme during this period was VR and AR. Exploring the latest tech and applications available and what the future holds for this rapidly evolving space.";
@@ -26,9 +31,56 @@ function calendar(graphH){
     //Unless at year level
     this.timeBackward= function(){
         cal.currentEvents={};
-        cal.currentTime=cal.currentTime.split(" ").pop().join(" ");
+        console.log(cal.currentTime);
+        cal.currentTime=cal.currentTime.split(" ");
+        console.log(cal.currentTime);
+        cal.currentTime.pop();
+        cal.currentTime=cal.currentTime.join(" ");
         updateCurrentEvents();
     }
+
+    //Download attachments belonging to clicked event
+    this.downloadAttachment=function(id){
+        console.log("id:", id);
+        graph.getAttachment(id)
+        .then(function (response) {
+            var attach= response.data.value;
+            console.log("The attachments are", attach);
+            //Store all existing image attachments
+            for(var u=0; u< attach.length;u++){
+                var element = document.createElement('a');
+
+                switch(attach[u].contentType){
+                    case "image/jpeg":
+                    case "image/jpg":
+                    case "image/png":
+                    case "image/gif":
+                        console.log("Downloading image")
+                        element.setAttribute("href", 'data:'+attach[u].contentType+';charset=utf-8;base64,'+  attach[u].contentBytes);
+                        break;
+                    case "text/plain":
+                        console.log("Downloading text")
+                        element.setAttribute("href", 'data:'+attach[u].contentType+';charset=utf-8,'+  atob(attach[u].contentBytes));
+                        break;
+                    default:
+                    console.log("Downloading default")
+                    element.setAttribute("href", 'data:'+attach[u].contentType+';charset=utf-8,'+  atob(attach[u].contentBytes));
+                    break;
+                }
+                
+
+                element.setAttribute('download', attach[u].name);
+                element.style.display = 'none';
+                document.body.appendChild(element);
+                element.click();
+                document.body.removeChild(element);
+            }
+            //var src="data:"+attach[u].contentType+";base64," + attach[u].contentBytes;
+        }, function (error) {
+            graph.login();
+            $log.error('HTTP request to the Microsoft Graph API failed.');
+        });         
+    } 
 
     //User jumps forward to more specific time
     //Only if not already at day level specifity
@@ -45,6 +97,16 @@ function calendar(graphH){
             cal.currentTime+=" "+newTime;
             console.log("Forwarding curent time to: ", cal.currentTime);
             updateCurrentEvents();
+        }else{
+            if(newTime.indexOf("-")==-1){
+                cal.currentTime=cal.currentTime.split(" ");
+                newTime=String(newTime).replace(/\s+/g, '');
+                newTime= newTime.length< 2? "0"+newTime : newTime;
+                cal.currentTime[2]=newTime;
+                cal.currentTime=cal.currentTime.join(" ");
+                console.log("Forwarding curent time to: ", cal.currentTime);
+                updateCurrentEvents();
+            }
         }
     }
 
@@ -53,18 +115,19 @@ function calendar(graphH){
         var tim=cal.currentTime.split(" ");
         //day, no description required
         if(tim.length==3){
-          return ""
-        //month
+            return "";
+        //month   
         }else if(tim.length==2){
-          return monthDescrip[tim[0]][tim[1]]==undefined? "": monthDescrip[tim[0]][tim[1]];
+            return cal.descriptions[tim[0]][tim[1]]==undefined? "": cal.descriptions[tim[0]][tim[1]];
         //year
         }else{
-          return yearDescrip[tim[0]]==undefined? "": yearDescrip[tim[0]];
+            return cal.descriptions[tim[0]]["year"]==undefined? "": cal.descriptions[tim[0]]["year"];
         }
     }
 
     //Allow to progressively step through time
     this.changeTime= function(ch){
+        
         cal.currentEvents={};
         var temp= cal.currentTime.split(" ");
 
@@ -72,12 +135,11 @@ function calendar(graphH){
         if(temp.length==1){
             cal.currentTime=String(parseInt(temp[0])+ch);//increae/decrease year
             console.log("Change current time to: ", cal.currentTime);
-            getCalendar();
-
+            cal.getCalendar();
         //Month changes
         }else if(temp.length==2){
             var idx=months.indexOf(temp[1])+ch;
-            temp[1]=idx>-1 ? months[idx%11] : "December";
+            temp[1]=idx>-1 ? months[idx%12] : "December";
             cal.currentTime=temp.join(" ");
 
             console.log("Change current time to: ", cal.currentTime);
@@ -86,13 +148,13 @@ function calendar(graphH){
         //Day changes
         }else{
             var day= parseInt(temp[2])+ch;
-            var monthEnd=monthsLength[months.indexOf(parseInt(temp[1]))];
-            monthEnd= monthEnd!=28 ? monthEnd : ((monthEnd%4==0 && !( !(monthEnd%100) && monthEnd%400)) ? 29 : 28);
+            var monthEnd=monthsLength[months.indexOf(temp[1])];
+            monthEnd= monthEnd!=28 ? monthEnd : isLeapYear(monthEnd) ? 29 : 28;
             
             if(day<1){
-            day=monthEnd;
+                day=monthEnd;
             } else if(day>monthEnd){
-            day=1;
+                day=1;
             }
             temp[2]= day>9 ? String(day): "0"+String(day);
             cal.currentTime=temp.join(" ");
@@ -117,7 +179,7 @@ function calendar(graphH){
 
     //Store attachment of currentEvent at key, event no. i
     function storeAttachment(key, i){
-
+        console.log("Current event id adding to",cal.currentEvents[key][i].id);
         if(!(cal.currentEvents[key][i].id in cal.storedImages)){
             //Get the attachment from microsoft calendar
             graph.getAttachment(cal.currentEvents[key][i].id)
@@ -127,7 +189,7 @@ function calendar(graphH){
                 //Store all existing image attachments
                 for(var u=0; u< attach.length;u++){
                     if(checkImage(attach[u].contentType)){
-
+                        console.log("adding image for event:", cal.currentEvents[key][i].id, " key", key, "i", i);
                         var src="data:"+attach[u].contentType+";base64," + attach[u].contentBytes;
                         if(cal.currentEvents[key][i].id in cal.storedImages){
                             cal.storedImages[cal.currentEvents[key][i].id].push(src); 
@@ -159,7 +221,7 @@ function calendar(graphH){
     //shorthand, adds event to currentEvents
     //If is allowed by currently selected filters
     function addCurrentEvent(event, key){
-        if(selectedEventTypes.indexOf(event.type)!=-1 || selectedEventTypes.length==0){  
+        if(eventFilters.indexOf(event.type)!=-1 || eventFilters.length==0){  
             if(key in cal.currentEvents){
                 cal.currentEvents[key].push(event);
             }else{
@@ -287,6 +349,8 @@ function calendar(graphH){
       console.log("Now updating Calendar side display");
       if(cal.currentTime.split(" ").length==2){
         updateMiniCalendar();
+      }else if(cal.currentTime.split(" ").length==1){
+        cal.daysMonth=[];
       }
       console.log("Finished updating current events: Updating calendar side display, events & their attachments")
     }
@@ -295,18 +359,18 @@ function calendar(graphH){
     this.changeEventsFilter= function(eventType){
         //update selected event types
         var removedFilter=false;
-        if(selectedEventTypes.indexOf(eventType)==-1){
-          selectedEventTypes.push(eventType);
+        if(eventFilters.indexOf(eventType)==-1){
+          eventFilters.push(eventType);
         }else{
-          selectedEventTypes= selectedEventTypes.filter(e => e !== eventType);
+          eventFilters= eventFilters.filter(e => e !== eventType);
           removedFilter=true;
         }
-        console.log("Showable event types:", selectedEventTypes);
+        console.log("Showable event types:", eventFilters);
         //restore this.currentevent to prev value
         //no filters to be applied, need reset
         //filter added, and not first filter
         //more events than previously. need to reload
-        if((!removedFilter && selectedEventTypes.length!=1 )|| selectedEventTypes.length==0){
+        if((!removedFilter && eventFilters.length!=1 )|| eventFilters.length==0){
           console.log("The number of visible events has increased");
           updateCurrentEvents();
         }
@@ -324,7 +388,7 @@ function calendar(graphH){
         console.log(key);
         for(var i=0;i<cal.currentEvents[key].length;i++){
           console.log(cal.currentEvents[key][i].type);
-          if( selectedEventTypes.indexOf(cal.currentEvents[key][i].type)!=-1 ){
+          if( eventFilters.indexOf(cal.currentEvents[key][i].type)!=-1 ){
             if(key in events){
               events[key].push(cal.currentEvents[key][i]);
             }else{
@@ -358,14 +422,14 @@ function calendar(graphH){
             //based on number of events and their respective colors
             if(dayColors.length>1){
               var gradient="-webkit-radial-gradient(";
-              for(var u=0; u< dayColors[day].length;u++){
-                gradient+=" "+dayColors[day][u]+' '+String(100/dayColors[day].length)+"%  ,";
+              for(var u=0; u< dayColors.length;u++){
+                gradient+=" "+dayColors[u]+' '+String(100/dayColors.length)+"%  ,";
               }
               gradient=gradient.slice(0,gradient.length-2);
               gradient+=")";
               return 'background:'+ gradient;
-            }else{
-              return 'background-color:'+ temp;
+            }else if(dayColors.length==1){
+              return 'background-color:'+ dayColors[0];
             }
           }
         }
@@ -466,6 +530,7 @@ function calendar(graphH){
     //Fetch all calendar dates, then place current in currentEvents
     //May lead to huge memory overflow
     this.getCalendar=function(){
+        cal.storedEvents={};
         graph.getCalendar(cal.currentTime)
         .then(function (response) {
           cal.currentEvents={};
@@ -488,6 +553,14 @@ function calendar(graphH){
             }else{
               newEvent.title=title[0];
             }
+            console.log("Add new event, type:", newEvent.type);
+            //Add new event type to colors
+            if( !(newEvent.type in cal.eventTypes)){
+
+                cal.eventTypes[newEvent.type] = colors[ Object.keys(cal.eventTypes).length];
+                console.log(cal.eventTypes, colors);
+            }
+
             var newEnd= newEvents[i].end.dateTime.split("-");
             var newStart= newEvents[i].start.dateTime.split("-");
             newEnd=[newEnd[0], newEnd[1], newEnd[2].slice(0,2), newEnd[2].slice(3,8)];//year month day need to get time conversion as well
