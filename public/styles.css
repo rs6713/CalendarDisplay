@@ -15,8 +15,9 @@ body{
   
 }
 
-.eventKey.highlight{
+.eventkey.highlight{
   padding:0.4em;
+  border: 0.1em solid white;
 }
 #main{
   display:grid;
@@ -66,7 +67,7 @@ body{
     transform: translateX(-50%);
   }
   #events{
-    max-height:100vh;
+    
     
     grid-template-columns: repeat(2, 1fr);
   }
@@ -222,7 +223,7 @@ body{
     font-size:10px;
     text-align:center;
   }
-.eventKey{
+.eventkey{
   padding:0.5em 0;
   display:inline-block;
   cursor:pointer;

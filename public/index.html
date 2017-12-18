@@ -22,20 +22,20 @@
   <!-- Microsoft authentification library-->
   <script src="https://secure.aadcdn.microsoftonline-p.com/lib/0.1.1/js/msal.min.js"></script> 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.8.0/loading-bar.css">
-
+  <link rel="stylesheet" href="styles.css">
 
   <!-- App code. -->
-  <script src="/scripts/config.js"></script>
-  <script src="/scripts/calendar.js"></script>
   <script src="/scripts/app.js"></script>
+  <script src="/scripts/config.js"></script>
   <script src="/scripts/graphHelper.js"></script>
+  <script src="/scripts/calendar.js"></script>
   <script src="/controllers/mainController.js"></script>  
-  <link rel="stylesheet" href="styles.css">
+  
 </head>
 <!--class="ms-Grid" -->
 <body >
   <div ng-controller="MainController as main" ng-include="'views/main.html'" id="main"></div>
-  
+
 </body>
 
 </html>

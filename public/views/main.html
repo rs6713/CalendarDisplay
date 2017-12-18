@@ -1,6 +1,7 @@
 
 
 <!-- Side view -->
+
 <div id="side">
   <h1> 
     <i class="fa fa-arrow-circle-left" aria-hidden="true" ng-click="main.appCalendar.changeTime(-1)"></i>
@@ -11,13 +12,14 @@
     <div class="dayW"  ng-repeat="day in ['M', 'T', 'W', 'T', 'F', 'S', 'S'] track by $index">
       {{day}}
     </div>
-    <div class="day" ng-repeat="day in main.appCalendar.daysMonth track by $index"  style="{{main.appCalendar.colourDay(day)}}" ng-click="main.appCalendar.timeForward(day)">
+    <div class="day" ng-repeat="day in main.appCalendar.daysMonth track by $index"  ng-style="main.appCalendar.colourDay(day)" ng-click="main.appCalendar.timeForward(day)">
       <!--style="background-color: {{i}}"-->
       {{day}}
     </div>
   </div>
   <div id="keyholder">
-      <div class="eventKey" ng-repeat="(key,val) in main.appCalendar.eventTypes" style="background-color:{{val}}" ng-click='main.appCalendar.changeEventsFilter(key)'>
+    <!-- ng-style="main.appCalendar.getBackground(val)" -->
+      <div class="eventkey" ng-repeat="(key,val) in main.appCalendar.eventTypes" style="background-color:{{val}}"  ng-click='main.appCalendar.changeEventsFilter(key)'>
           {{key}}
       </div>
   </div>
@@ -40,7 +42,7 @@
       <div id="eventHolder">
         <!--| orderBy:'-start':reverse-->
         <div class="events" ng-repeat="event in main.appCalendar.currentEvents[key] ">
-          <div class="event" style="background-color:{{main.appCalendar.eventTypes[event.type]}}">
+          <div class="event" ng-style="main.appCalendar.getBackground(main.appCalendar.eventTypes[event.type])">
             <a id="attachment" ng-click="main.appCalendar.downloadAttachment(event.id)">
               <i  class="fa fa-paperclip" aria-hidden="true" ng-show="event.hasAttachments"></i>
             </a>
@@ -62,4 +64,4 @@
       <!--<i class="fa fa-arrow-circle-right" aria-hidden="true" ng-click="main.appCalendar.timeForward(period)"></i> -->
   </div>
 </div>
-<script src="scripts/visuals.js"></script>
+<script src="/scripts/visuals.js"></script>

@@ -38,6 +38,13 @@ function calendar(graphH){
         cal.currentTime=cal.currentTime.join(" ");
         updateCurrentEvents();
     }
+    
+    function s2ab(s) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+    }
 
     //Download attachments belonging to clicked event
     this.downloadAttachment=function(id){
@@ -50,26 +57,51 @@ function calendar(graphH){
             for(var u=0; u< attach.length;u++){
                 var element = document.createElement('a');
 
+                var blob;
+
                 switch(attach[u].contentType){
                     case "image/jpeg":
                     case "image/jpg":
                     case "image/png":
                     case "image/gif":
                         console.log("Downloading image")
+                        
+                        //blob = new Blob([JSON.stringify(attach[u].contentBytes)], {
+                        //    type: "octet/stream"
+                        //});
                         element.setAttribute("href", 'data:'+attach[u].contentType+';charset=utf-8;base64,'+  attach[u].contentBytes);
+                        element.setAttribute('download', attach[u].name);
                         break;
                     case "text/plain":
                         console.log("Downloading text")
+                        //blob = new Blob([JSON.stringify(attach[u].contentBytes)], {
+                        //    type: attach[u].contentType
+                        //});
                         element.setAttribute("href", 'data:'+attach[u].contentType+';charset=utf-8,'+  atob(attach[u].contentBytes));
+                        element.setAttribute('download', attach[u].name);
+                        break;
+                    case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+                        //console.log("Downloading default")
+                        //blob = new Blob([JSON.stringify(attach[u].contentBytes)], {
+                        //    type: attach[u].contentType
+                        //});
+                        console.log("Downloading excel .xslx", attach[u].contentType);
+                        //application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+                        element.setAttribute("href", 'data:'+'application/vnd.ms-excel'+';charset=utf-8;base64,'+  attach[u].contentBytes);
+                        element.setAttribute('download', attach[u].name.replace('.xlsx', '.xls'));
                         break;
                     default:
-                    console.log("Downloading default")
-                    element.setAttribute("href", 'data:'+attach[u].contentType+';charset=utf-8,'+  atob(attach[u].contentBytes));
-                    break;
-                }
-                
+                        console.log("Downloading default", attach[u].contentType);
+                        //application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+                        element.setAttribute("href", 'data:'+attach[u].contentType+';charset=utf-8;base64,'+  attach[u].contentBytes);
+                        element.setAttribute('download', attach[u].name);
 
-                element.setAttribute('download', attach[u].name);
+                }
+
+                //element.setAttribute("href", URL.createObjectURL(blob));
+                //href = URL.createObjectURL(blob);
+
+                
                 element.style.display = 'none';
                 document.body.appendChild(element);
                 element.click();
@@ -85,7 +117,8 @@ function calendar(graphH){
     //User jumps forward to more specific time
     //Only if not already at day level specifity
     this.timeForward=function(newTime){
-
+        newTime=String(newTime);
+        console.log("Forwarding new time from: ", newTime);
         if(cal.currentTime.split(" ").length!=3){
             cal.currentEvents={};    
             //Make all dates "--" format
@@ -118,11 +151,16 @@ function calendar(graphH){
             return "";
         //month   
         }else if(tim.length==2){
-            return cal.descriptions[tim[0]][tim[1]]==undefined? "": cal.descriptions[tim[0]][tim[1]];
+            if(tim[0] in cal.descriptions && tim[1]in cal.descriptions[tim[0]]){
+                return cal.descriptions[tim[0]][tim[1]]==undefined? "": cal.descriptions[tim[0]][tim[1]];
+            }
         //year
         }else{
-            return cal.descriptions[tim[0]]["year"]==undefined? "": cal.descriptions[tim[0]]["year"];
+            if(tim[0] in cal.descriptions && "year" in cal.descriptions[tim[0]]){
+                return cal.descriptions[tim[0]]["year"]==undefined? "": cal.descriptions[tim[0]]["year"];
+            }
         }
+        return "";
     }
 
     //Allow to progressively step through time
@@ -167,7 +205,6 @@ function calendar(graphH){
 
     //Regular expression checks file extension, checks end of contentType
     function checkImage(url) {
-        console.log(url);
         var arr = [ "jpeg", "jpg", "gif", "png" ];
         for(var i=0; i<arr.length;i++){
           if( url.indexOf(arr[i]) !=-1){
@@ -182,19 +219,21 @@ function calendar(graphH){
         console.log("Current event id adding to",cal.currentEvents[key][i].id);
         if(!(cal.currentEvents[key][i].id in cal.storedImages)){
             //Get the attachment from microsoft calendar
-            graph.getAttachment(cal.currentEvents[key][i].id)
+            var idCall=cal.currentEvents[key][i].id;
+            graph.getAttachment(idCall)
             .then(function (response) {
                 var attach= response.data.value;
-
+                
                 //Store all existing image attachments
                 for(var u=0; u< attach.length;u++){
                     if(checkImage(attach[u].contentType)){
-                        console.log("adding image for event:", cal.currentEvents[key][i].id, " key", key, "i", i);
+                        console.log("adding image for event:"," key", key, "i", i );
+                        console.log(idCall);
                         var src="data:"+attach[u].contentType+";base64," + attach[u].contentBytes;
-                        if(cal.currentEvents[key][i].id in cal.storedImages){
-                            cal.storedImages[cal.currentEvents[key][i].id].push(src); 
+                        if(idCall in cal.storedImages){
+                            cal.storedImages[idCall].push(src); 
                         }else{
-                            cal.storedImages[cal.currentEvents[key][i].id]=[src]; 
+                            cal.storedImages[idCall]=[src]; 
                         }                            
                     }
                 }  
@@ -385,9 +424,7 @@ function calendar(graphH){
     var loadEventsShown=function(){
       var events={};
       for(var key in cal.currentEvents){
-        console.log(key);
         for(var i=0;i<cal.currentEvents[key].length;i++){
-          console.log(cal.currentEvents[key][i].type);
           if( eventFilters.indexOf(cal.currentEvents[key][i].type)!=-1 ){
             if(key in events){
               events[key].push(cal.currentEvents[key][i]);
@@ -427,14 +464,18 @@ function calendar(graphH){
               }
               gradient=gradient.slice(0,gradient.length-2);
               gradient+=")";
-              return 'background:'+ gradient;
+              return {'background': gradient};
             }else if(dayColors.length==1){
-              return 'background-color:'+ dayColors[0];
+              return {'background-color': dayColors[0]};
             }
           }
         }
-        return 'background-color: #222222';
+        return {'background-color' :'#222222'};
     } 
+
+    this.getBackground=function(val){
+        return {'background-color': val};
+    }
 
     function getEventTime(newStart, newEnd){
             //2017-12-07T00:00:00.0000000
