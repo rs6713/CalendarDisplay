@@ -12,7 +12,6 @@ body{
 .highlight{
   /*box-shadow: -2px 0 white, 0 2px white, 2px 0 white, 0 -2px white;*/
   border: 0.1em solid white;
-  
 }
 
 .eventkey.highlight{
@@ -42,6 +41,13 @@ body{
 
 }
 
+#day{
+  position:absolute;
+  top:0.5em;
+  left:0.5em;
+  font-size:1.5em;
+}
+
 #attachment{
   position:absolute;
   top:0.5em;
@@ -51,7 +57,7 @@ body{
 }
 
 #attachment:hover{
-  text-shadow: 2px 2px 5px white;
+  text-shadow: 1px 1px 3px white;
 }
 
 @media screen and (max-width: 700px) and (min-width:501px){
@@ -189,6 +195,7 @@ body{
 .event{
   position:relative;
   padding:5px;
+  padding-top:1.75em;
   padding-bottom:10px;
   
 }
@@ -241,6 +248,7 @@ body{
   display:inline-block;
   color :white;
   line-height:1em;
+  margin-bottom:0.2em;
 }
 .day{
   display:inline-block;

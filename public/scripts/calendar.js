@@ -507,6 +507,11 @@ function calendar(graphH){
             return cal.displayTime(newStart, newEnd);        
     }
 
+    this.getDay=function(st){
+        
+        return st[2];
+    }
+
     //Creates human friendly way to view time, removes unnecc info
     //Input is ["2017", "02", "11", "00:00"] *2
     //Output "1st 5.00am - 2nd 9.00pm"
@@ -556,6 +561,8 @@ function calendar(graphH){
           stNew.push("2nd");
         }else if(st[2]=="03"){
           stNew.push("3rd");
+        }else if(st[2][1]=="1"){
+            stNew.push(parseInt(st[2])+"st");
         }else{
           stNew.push(parseInt(st[2])+"th");
         }
@@ -607,7 +614,7 @@ function calendar(graphH){
             newEnd=[newEnd[0], newEnd[1], newEnd[2].slice(0,2), newEnd[2].slice(3,8)];//year month day need to get time conversion as well
             newStart=[newStart[0], newStart[1], newStart[2].slice(0,2),newStart[2].slice(3,8)];
             newEvent.time= getEventTime(newStart, newEnd);
-
+            newEvent.day=cal.getDay(newStart);
             //Add events to event list, 
             //If event spans multiple days, months, years, an event is added every day it occurs
             
