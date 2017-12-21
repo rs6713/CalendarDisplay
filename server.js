@@ -38,6 +38,7 @@ app.get('*', function (req, res) {
 
 
 
+http.createServer(app).listen(port);
 
-https.createServer(options, app).listen(port)
+//https.createServer(options, app).listen(port)
 console.log('Listening on port ' + port + '...'); 
