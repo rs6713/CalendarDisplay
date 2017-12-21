@@ -5,7 +5,7 @@
 
 var APPLICATION_CONFIG = {
     clientID: "b9de4238-7562-46de-bc0d-14931da45bcb",
-    redirectUri: "http://nbcalendar.herokuapp.com:" +process.env.PORT+'"',
+    redirectUri: "http://nbcalendar.herokuapp.com/",
     interactionMode: "popUp",
     graphEndpoint: "https://graph.microsoft.com/v1.0/me",
     graphScopes: ["user.read calendars.read"]

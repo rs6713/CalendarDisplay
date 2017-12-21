@@ -37,5 +37,7 @@ app.get('*', function (req, res) {
 //app.listen(port);
 
 
-http.createServer(options, app).listen(process.env.PORT || 5000)
+
+
+https.createServer(options, app).listen(port)
 console.log('Listening on port ' + port + '...'); 
