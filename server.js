@@ -29,6 +29,7 @@ app.use("/bower_components", express.static(path.join(__dirname, 'bower_componen
 
 // Set up our one route to the index.html file.
 app.get('*', function (req, res) {
+  console.log(__dirname);
 	res.sendFile(path.join(__dirname + '/public/index.html'));
 });
 
