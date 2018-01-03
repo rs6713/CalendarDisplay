@@ -42,7 +42,7 @@
 
     function initAuth() {
         // Check initial connection status.
-        if (localStorage.token) {
+        if (isAuthenticated()) {//localStorage.token
           console.log("Localstorage token exists, logged in");
           // Add the required Authorization header with bearer token.
           $http.defaults.headers.common.Authorization = 'Bearer ' + localStorage.token;
