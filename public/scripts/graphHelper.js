@@ -40,7 +40,7 @@ var clientApplication;
                 clientApplication.acquireTokenSilent(APPLICATION_CONFIG.graphScopes).then(function (accessToken) {
                     console.log("Localstorage token, gotten by login popup:", accessToken);
                     localStorage.token = accessToken;
-                    window.location.reload();// -->goes back, page start as normal
+                    window.location.reload(); // -->goes back, page start as normal
                 }, function (error) {
                     clientApplication.acquireTokenPopup(APPLICATION_CONFIG.graphScopes).then(function (accessToken) {
                         localStorage.token = accessToken;
@@ -52,6 +52,7 @@ var clientApplication;
                 window.alert("Error during login:\n" + error);
             });
         },
+
         logout: function logout() {
             clientApplication.logout();
             delete localStorage.token;
@@ -82,11 +83,9 @@ var clientApplication;
 //time is space separated day, month, year
 function getTimePeriod(time){
     var time= time.split(" "); 
-    //console.log(time);
     var months=["","January", "February","March", "April", "May", "June", "July", "August", "September", "October", "November","December"];
-    //var months={"January":"01", "February":"02", "March":"03","April":"04", "May":"05", "June":"06","July":"07", "August":"08", "September":"09", "October": "10", "November":"11", "December":"12"};
-    if(time.length==1){
-        
+    
+    if(time.length==1){ 
         return [time[0]+"-01-01T00:00:00.0000000", (parseInt(time[0])+1)+"-01-01T00:00:00.0000000"];
     }else{
         var month= String(months.indexOf(time[1]));

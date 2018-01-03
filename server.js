@@ -3,7 +3,7 @@
 *  See LICENSE in the source repository root for complete license information. 
 */
 var https = require('https');
-var http= require('http');
+//var http= require('http');
 var express = require('express');
 
 var app = express();
@@ -15,7 +15,6 @@ var options = {
   key: fs.readFileSync(path.resolve('keycert/key.pem')),
   cert: fs.readFileSync(path.resolve('keycert/cert.pem'))
 };
-
 
 // Initialize variables. 
 var port = process.env.PORT || 5000; 
@@ -33,12 +32,11 @@ app.get('*', function (req, res) {
 	res.sendFile(path.join(__dirname + '/public/index.html'));
 });
 
-// Start the server.  
-//app.listen(port);
-
-
-
-http.createServer(app).listen(port);
-
 //https.createServer(options, app).listen(port)
 console.log('Listening on port ' + port + '...'); 
+
+//Start the server.  
+//app.listen(port);
+
+http.createServer(app).listen(port);
+//Redirect URL https://nbcalendar.herokuapp.com
