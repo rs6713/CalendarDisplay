@@ -16,6 +16,13 @@ $(document).ready(function(){
         $('.day').outerWidth(divWidth);
         $('.dayW').outerWidth(divWidth);        
     });
+    
+    $(".date h1").hover(function(){
+        
+            var scope= angular.element(document.getElementById('main')).scope();
+            console.log(scope.appCalendar.currentTime);
+        
+    });
 });
 $(window).resize(function(){
     var divWidth = $('.day').outerHeight(); 
