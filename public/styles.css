@@ -208,6 +208,7 @@ body{
   .event #description{
     font-size:0.8em;
     padding:0.5em;
+    padding-bottom:1em;
     text-align:justify;
   }
   .date span{
