@@ -21,7 +21,7 @@
 //these can then be repeatedly used.
 //Issue is when exceeds max data storage
 //Allow filter event types? clear/reset colouring, #222222
-
+console.log("Maincontroller");
 (function () {
   angular
     .module('app')
@@ -35,10 +35,17 @@
     vm.logout = logout;
     vm.isAuthenticated = isAuthenticated;
     vm.initAuth = initAuth;
+    console.log("Creating main controller");
 
     vm.appCalendar= new calendar(GraphHelper);
     /////////////////////////////////////////
     // End of exposed properties and methods.
+    vm.getTimeStyle=function(hover){
+      if(hover && vm.appCalendar.currentTime.split(" ").length!=3){
+        return {"text-shadow": "1px 1px 3px white", "cursor":"pointer"};
+      }
+      return {"text-shadow": "0px 0px 3px white"}
+    }
 
     function initAuth() {
         // Check initial connection status.

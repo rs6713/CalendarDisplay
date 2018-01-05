@@ -1,0 +1,48 @@
+<!--  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
+        See LICENSE in the source repository root for complete license information. -->
+
+doctype html
+html(ng-app="app")
+
+head
+  meta(charset="utf-8")
+  meta(http-equiv="X-UA-Compatible", content="IE=edge")
+  title
+    NBC Calendar
+  base(href="/")
+
+  <!-- Third party dependencies. -->
+  script(src="https://use.fontawesome.com/1079ce90fa.js")
+  script(src="https://code.jquery.com/jquery-3.2.1.min.js", integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=", crossorigin="anonymous")
+  <!-- Microsoft ui components/recreation-->
+  link( rel="stylesheet", href="https://appsforoffice.microsoft.com/fabric/1.0/fabric.css")
+  link( rel="stylesheet", href="https://appsforoffice.microsoft.com/fabric/1.0/fabric.components.css")
+    
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular.js")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular-route.js")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.8.0/loading-bar.js")
+  <!-- Microsoft authentification library-->
+  script(src="https://secure.aadcdn.microsoftonline-p.com/lib/0.1.1/js/msal.min.js")
+  link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.8.0/loading-bar.css")
+  link(rel="stylesheet", href="styles.css")
+
+  <!-- App code. -->
+  script.
+    var APPLICATION_CONFIG = {
+        clientID: '#{APP_CONFIG.clientID}',
+        redirectUri: '#{APP_CONFIG.redirectUri}',
+        interactionMode:'#{APP_CONFIG.interactionMode}',
+        graphEndpoint: '#{APP_CONFIG.graphEndpoint}',
+        graphScopes: ['#{APP_CONFIG.graphScopes}']
+    };
+    console.log(APPLICATION_CONFIG);
+
+  script(src="/scripts/app.js")
+  
+  script(src="/scripts/graphHelper.js")
+  script(src="/scripts/calendar.js")
+  script(src="/controllers/mainController.js")
+  
+
+body
+  div(id="main", ng-controller="MainController as main", ng-include="'views/main.html'")

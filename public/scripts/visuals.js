@@ -1,7 +1,8 @@
 
+
 $(document).ready(function(){
-
-
+    
+    console.log("DOCUMENT READY");
     $(document).on('click', '.eventkey', function (e) {
         console.log("Changing event key appearance");
         $(this).toggleClass("highlight");
@@ -17,12 +18,7 @@ $(document).ready(function(){
         $('.dayW').outerWidth(divWidth);        
     });
     
-    $(".date h1").hover(function(){
-        
-            var scope= angular.element(document.getElementById('main')).scope();
-            console.log(scope.appCalendar.currentTime);
-        
-    });
+
 });
 $(window).resize(function(){
     var divWidth = $('.day').outerHeight(); 

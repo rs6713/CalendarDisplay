@@ -21,15 +21,18 @@ function createApplication(applicationConfig) {
 }
 
 var clientApplication;
+console.log("graphHelper");
 
 (function () {
+  console.log("inside graph helper");
   angular
     .module('app')
     .service('GraphHelper', ['$http', function ($http) {
 
       // Initialize the auth request.
+      console.log("Initializing graphhelper");
       clientApplication = createApplication(APPLICATION_CONFIG);
-
+      console.log("Graphhelper after created application");
       return {
 
 

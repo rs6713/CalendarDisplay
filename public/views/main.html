@@ -36,9 +36,9 @@
 </div>
 <!-- Scrollable dates-->
 <div id="events" >
-  <div class="date" ng-repeat="key in main.appCalendar.keys(main.appCalendar.currentEvents)"  >
+  <div class="date" ng-repeat="key in main.appCalendar.keys(main.appCalendar.currentEvents)" >
       <!--<span>{{period}}</span>-->
-      <h1 ng-click="main.appCalendar.timeForward(key)">{{key}}</h1>
+      <h1 ng-click="main.appCalendar.timeForward(key)" ng-style="main.getTimeStyle(hover)" ng-init="hover=false" ng-mouseenter="hover=true" ng-mouseleave="hover=false">{{key}}</h1>
       <div id="eventHolder">
         <!--| orderBy:'-start':reverse-->
         <div class="events" ng-repeat="event in main.appCalendar.currentEvents[key] ">

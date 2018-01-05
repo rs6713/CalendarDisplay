@@ -177,10 +177,10 @@ body{
     flex: 1 1 auto;
     overflow-y:scroll;
   }
-
+/*
   .date h1{
     cursor:pointer;
-  }
+  }*/
   /*
   .date h1:hover{
     text-shadow: 1px 1px 3px white;

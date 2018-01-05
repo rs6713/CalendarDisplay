@@ -1,5 +1,6 @@
 //This interface will work under the assumption it is possible to store all a years events
 //Only keep one year worth of events stored at a time. (Can change this in changeTime(ch) function)
+console.log("calendar");
 function calendar(graphH){
     this.storedImages={};
     this.storedEvents={};
@@ -27,6 +28,7 @@ function calendar(graphH){
     var graph= graphH;
 
     var cal=this;
+    console.log("Creating Calendar");
     //User jumps backward to less specific time
     //Unless at year level
     this.timeBackward= function(){
