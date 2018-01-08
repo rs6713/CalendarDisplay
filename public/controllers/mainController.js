@@ -44,7 +44,7 @@ console.log("Maincontroller");
       if(hover && vm.appCalendar.currentTime.split(" ").length!=3){
         return {"text-shadow": "1px 1px 3px white", "cursor":"pointer"};
       }
-      return {"text-shadow": "0px 0px 3px white"}
+      return {"text-shadow": "0px 0px 0px white"}
     }
 
     function initAuth() {
