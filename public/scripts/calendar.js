@@ -380,7 +380,7 @@ function calendar(graphH){
       console.log("Beginning to update events, loading items from storedEvents into currentEvents");
       
       //Load events wanted from storedEvents into currentEvents
-      loadCurrentEvents()
+      loadCurrentEvents();
 
       //Loading image attachments that have not been previously downloaded into storedImages
       console.log("Now loading attachments into currentEvents");

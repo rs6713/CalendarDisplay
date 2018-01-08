@@ -42,34 +42,34 @@ console.log("Maincontroller");
     // End of exposed properties and methods.
     vm.getTimeStyle=function(hover){
       if(hover && vm.appCalendar.currentTime.split(" ").length!=3){
-        return {"text-shadow": "1px 1px 3px white", "cursor":"pointer"};
+        return {"text-shadow": "0px 0px 0px white", "cursor":"pointer"};
       }
       return {"text-shadow": "0px 0px 0px white"}
     }
 
-    vm.getAttachStyle=function(hover){
-      if(hover){
-        console.log("Hovered so good");
+    vm.getAttachStyle=function(hover2){
+
+      if(hover2){
         return {
           "position":"absolute",
           "top":"0.5em",
           "right":"0.5em",
           "font-size":"1.5em",
           "cursor":"pointer",
-          "text-shadow": "1px 1px 1px white"
-        }
-      }
-      return {
-        "position":"absolute",
-        "top":"0.5em",
-        "right":"0.5em",
-        "font-size":"1.5em",
-        "cursor":"pointer",
-        "text-shadow": "0px 0px 0px white"
+          "text-shadow": "0px 0px 0px white"
+        };
+      }else{
+        return {
+          "position":"absolute",
+          "top":"0.5em",
+          "right":"0.5em",
+          "font-size":"1.5em",
+          "cursor":"pointer",
+          "text-shadow": "0px 0px 0px white"
+        };
       }
     }
     
-
     function initAuth() {
         // Check initial connection status.
         if (localStorage.token) {
