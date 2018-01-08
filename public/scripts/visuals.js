@@ -1,5 +1,3 @@
-
-
 $(document).ready(function(){
     
     console.log("DOCUMENT READY");
@@ -18,7 +16,6 @@ $(document).ready(function(){
         $('.dayW').outerWidth(divWidth);        
     });
     
-
 });
 $(window).resize(function(){
     var divWidth = $('.day').outerHeight(); 
