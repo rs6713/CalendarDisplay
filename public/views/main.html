@@ -43,7 +43,8 @@
         <!--| orderBy:'-start':reverse-->
         <div class="events" ng-repeat="event in main.appCalendar.currentEvents[key] ">
           <div class="event" ng-style="main.appCalendar.getBackground(main.appCalendar.eventTypes[event.type])">
-            <a id="attachment" ng-click="main.appCalendar.downloadAttachment(event.id)" ng-style="main.getAttachStyle(hover)" ng-init="hover=false" ng-mouseenter="hover=true" ng-mouseleave="hover=false">
+            <!-- ng-style="main.getAttachStyle(hover)" -->
+            <a id="attachment" ng-click="main.appCalendar.downloadAttachment(event.id)"  ng-init="hover=false" ng-mouseenter="hover=true" ng-mouseleave="hover=false">
               <i  class="fa fa-paperclip" aria-hidden="true" ng-show="event.hasAttachments"></i>
             </a>
             <div id="day"> {{event.day}}</div>
