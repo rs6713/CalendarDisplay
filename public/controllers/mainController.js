@@ -50,9 +50,23 @@ console.log("Maincontroller");
     vm.getAttachStyle=function(hover){
       if(hover){
         console.log("Hovered so good");
-        return {"text-shadow": "1px 1px 3px white"};
+        return {
+          "position":"absolute",
+          "top":"0.5em",
+          "right":"0.5em",
+          "font-size":"1.5em",
+          "cursor":"pointer",
+          "text-shadow": "1px 1px 1px white"
+        }
       }
-      return {"text-shadow": "0px 0px 0px white"};
+      return {
+        "position":"absolute",
+        "top":"0.5em",
+        "right":"0.5em",
+        "font-size":"1.5em",
+        "cursor":"pointer",
+        "text-shadow": "0px 0px 0px white"
+      }
     }
     
 
