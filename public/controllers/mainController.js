@@ -47,6 +47,14 @@ console.log("Maincontroller");
       return {"text-shadow": "0px 0px 0px white"}
     }
 
+    vm.getAttachStyle=function(hover){
+      if(hover){
+        return {"text-shadow": "1px 1px 3px white"};
+      }
+      return {"text-shadow": "0px 0px 0px white"};
+    }
+    
+
     function initAuth() {
         // Check initial connection status.
         if (localStorage.token) {

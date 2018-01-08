@@ -60,9 +60,7 @@ body{
   text-shadow: 0px 0px 0px white;
 }
 
-#attachment:hover{
-  text-shadow: 1px 1px 3px white;
-}
+
 
 @media screen and (max-width: 700px) and (min-width:501px){
   #main{
@@ -77,8 +75,6 @@ body{
     transform: translateX(-50%);
   }
   #events{
-    
-    
     grid-template-columns: repeat(2, 1fr);
   }
   #key-holder{
