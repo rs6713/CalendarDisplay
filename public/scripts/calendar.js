@@ -7,9 +7,7 @@ function calendar(graphH){
     this.currentEvents={};
 
     this.descriptions={"2017": 
-                    {"year": "This year saw the introduction of Spark, helping to encourage innovation across the company. \
-    To accompany this advanced technology has started the development of pop-up stands to explain the latest tech to co-workers."
-                    ,"December": "A month of many talks and demonstrations, falling under the theme of VR."
+                    {"year": "This year may be gone, but the events and the projects your undertook will last a lifetime."
                 }};
 
     var eventFilters=[];
